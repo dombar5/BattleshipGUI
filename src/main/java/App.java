@@ -27,7 +27,7 @@ public class App extends Application {
         public static boolean canMoveGame = false;
         
         //Server com object
-        public static Connection connection;
+        //public static Connection connection;
         
         public static Player player1;
         public static Map map; 
