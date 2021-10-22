@@ -1,0 +1,77 @@
+@options
+@argfile
+-classpath
+'C:/Users/auris233/.m2/repository/org/openjfx/javafx-controls/11/javafx-controls-11.jar;C:/Users/auris233/.m2/repository/org/openjfx/javafx-controls/11/javafx-controls-11-win.jar;C:/Users/auris233/.m2/repository/org/openjfx/javafx-graphics/11/javafx-graphics-11.jar;C:/Users/auris233/.m2/repository/org/openjfx/javafx-graphics/11/javafx-graphics-11-win.jar;C:/Users/auris233/.m2/repository/org/openjfx/javafx-base/11/javafx-base-11.jar;C:/Users/auris233/.m2/repository/org/openjfx/javafx-base/11/javafx-base-11-win.jar;C:/Users/auris233/.m2/repository/org/openjfx/javafx-fxml/11/javafx-fxml-11.jar;C:/Users/auris233/.m2/repository/org/openjfx/javafx-fxml/11/javafx-fxml-11-win.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'1.8'
+-sourcepath
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2021. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/target/site/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'BattleshipGUI 1.0-SNAPSHOT API'
+-linkoffline
+'https://docs.oracle.com/javase/8/docs/api' 'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'BattleshipGUI 1.0-SNAPSHOT API'
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/src/main/java/App.java'
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/src/main/java/Connection.java'
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/src/main/java/Island.java'
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/src/main/java/Map.java'
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/src/main/java/Mine.java'
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/src/main/java/Player.java'
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/src/main/java/Server.java'
+'C:/Users/auris233/Documents/NetBeansProjects/BattleshipGUI/src/main/java/Ship.java'
+C:\Users\auris233\.m2\repository\org\openjfx\javafx-controls\11\javafx-controls-11.jar = 1634285338425
+C:\Users\auris233\.m2\repository\org\openjfx\javafx-controls\11\javafx-controls-11-win.jar = 1634285340774
+C:\Users\auris233\.m2\repository\org\openjfx\javafx-graphics\11\javafx-graphics-11.jar = 1634285338425
+C:\Users\auris233\.m2\repository\org\openjfx\javafx-graphics\11\javafx-graphics-11-win.jar = 1634285341624
+C:\Users\auris233\.m2\repository\org\openjfx\javafx-base\11\javafx-base-11.jar = 1634285338384
+C:\Users\auris233\.m2\repository\org\openjfx\javafx-base\11\javafx-base-11-win.jar = 1634285340762
+C:\Users\auris233\.m2\repository\org\openjfx\javafx-fxml\11\javafx-fxml-11.jar = 1634285338516
+C:\Users\auris233\.m2\repository\org\openjfx\javafx-fxml\11\javafx-fxml-11-win.jar = 1634285339253
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java\App.java = 1634284671349
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java\Connection.java = 1634284641916
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java\Island.java = 1634284490569
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java\Map.java = 1634284641805
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java\Mine.java = 1634284490407
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java\module-info.java = 1633449780855
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java\Player.java = 1634284490224
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java\Server.java = 1633620647368
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java\Ship.java = 1634284490029
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\src\main\java = 1634284671400
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\allclasses-frame.html = 1634285344352
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\allclasses-noframe.html = 1634285344352
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\App.html = 1634285344149
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\Connection.html = 1634285344179
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\constant-values.html = 1634285344291
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\deprecated-list.html = 1634285344350
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\help-doc.html = 1634285344360
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\index-all.html = 1634285344341
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\index.html = 1634285344352
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\Island.html = 1634285344197
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\Map.html = 1634285344218
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\Mine.html = 1634285344228
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\overview-tree.html = 1634285344331
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\package-frame.html = 1634285344260
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\package-list = 1634285344260
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\package-summary.html = 1634285344270
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\package-tree.html = 1634285344281
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\package-use.html = 1634285344331
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\Player.html = 1634285344238
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\script.js = 1634285344362
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\Server.html = 1634285344250
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\Ship.html = 1634285344260
+C:\Users\auris233\Documents\NetBeansProjects\BattleshipGUI\target\site\apidocs\stylesheet.css = 1634285214036
