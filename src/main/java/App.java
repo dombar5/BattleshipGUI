@@ -56,7 +56,12 @@ public class App extends Application {
         
         connection = new Connection();
         connection.run();
+        MAAAANIGGGAAAA();
         launch(args);
+    }
+    
+    public static void MAAAANIGGGAAAA(){
+        System.out.println("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
     }
     //Play field setup
     public static void loadFile(char[][] board) {
