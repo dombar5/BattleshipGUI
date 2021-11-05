@@ -1,3 +1,11 @@
+import Builder.Builder;
+import Builder.Object;
+import Builder.ShipBuilder;
+import GameObjects.Mine;
+import GameObjects.Map;
+import GameObjects.Player;
+import GameObjects.Ship;
+import GameObjects.Island;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import javafx.scene.layout.*;
@@ -28,9 +36,6 @@ public class App extends Application {
         
         //Server com object
         public static Connection connection;
-        
-        public static Player player1;
-        public static Map map; 
        
         //Text data
         public static char[][] cpuBord = new char[10][10];
@@ -49,6 +54,7 @@ public class App extends Application {
         public static int coordX;
         public static int coordY;
         public static int opponentHealth = 17;
+        public static String[] data;
         
 
         
@@ -56,69 +62,18 @@ public class App extends Application {
         
         connection = new Connection();
         connection.run();
-        MAAAANIGGGAAAA();
         launch(args);
+
     }
     
-    public static void MAAAANIGGGAAAA(){
-        System.out.println("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-    }
+
     //Play field setup
     public static void loadFile(char[][] board) {
-        
-        String[] data = {"B B B B * C C C C C",
-                         "* * * * * * * * * *",
-                         "* S * E * * * E * *",
-                         "* S * * * * * * * *",
-                         "* S * * * D * * * *",
-                         "P P * * * D * E * *",
-                         "* * * * * D * * * *",
-                         "* * * * * * * E * *",
-                         "* * * * I I * * * *",
-                         "* * * * I I * * * *" };
-		
+       	
         for (int i = 0; i < 10; i++) {
             String[] line = data[i].split(" ");
             for (int j = 0; j < 10; j++) {
                 board[i][j] = line[j].charAt(0);
-            }
-        }
-        BuildFleet(board);
-    }
-    //Objects setup
-    public static void BuildFleet(char[][] board){
-        int mineCounter = 0;
-        Ship[] ships = new Ship[5];
-        Mine[] mines = new Mine[4];
-        Island island = new Island();
-        ships[0] = new Ship('C');
-        ships[1] = new Ship('B');
-        ships[2] = new Ship('S');
-        ships[3] = new Ship('D');
-        ships[4] = new Ship('P');
-       
-        for (int row = 0; row < 10; row++) {
-            for (int col = 0; col < 10; col++) {
-                if(board[row][col]=='D')
-                    ships[3].Add(row, col);
-                if(playerBord[row][col]=='B')
-                    ships[1].Add(row, col);
-                if(playerBord[row][col]=='P')
-                    ships[4].Add(row, col);
-                if(playerBord[row][col]=='C')
-                    ships[0].Add(row, col);
-                if(playerBord[row][col]=='S')
-                    ships[2].Add(row, col);
-                                
-                if(playerBord[row][col]=='E'){
-                    mines[mineCounter] = new Mine(1, row, col);
-                    mineCounter++;
-                }                               
-                if(playerBord[row][col]=='I'){
-                    island.Add(row, col);
-                }
-                map = new Map(island, ships, mines);
-                player1 = new Player(canMoveGame, map, "Auris233");
             }
         }
     }
@@ -135,21 +90,17 @@ public class App extends Application {
 				 	EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() { 
 		            public void handle(ActionEvent e) 
 			            {
-                                   
-			            	whenWin(textBoard2, textBoard);
 			            	if (canMove) try {
                                             playerMove(textBoard, words, textBoard2, x1, y1);
                                             } catch (IOException ex) {
                                                 Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-                                            }
-			            	whenWin(textBoard2, textBoard);
-			            	
+                                            }	
                                     }
 			        };
 			        buttonArray[row][col].setOnAction(event);
 	       		}
-			 	buttonArray[row][col].setStyle("-fx-background-radius: 0");
-			 	buttonArray[row][col].setMinHeight(43);
+			buttonArray[row][col].setStyle("-fx-background-radius: 0");
+			buttonArray[row][col].setMinHeight(43);
 		        buttonArray[row][col].setMaxHeight(43);
 		        buttonArray[row][col].setMinWidth(43);
 		        buttonArray[row][col].setMaxWidth(43);
@@ -173,7 +124,6 @@ public class App extends Application {
 			if (refBoard[letter][x] != 'M' || refBoard[letter][x] != 'H') {
 				if (refBoard[letter][x] == '*') {
 					refBoard[letter][x] = 'M';
-                                        connection.SendData(String.valueOf(refBoard[letter][x]));
 					boardPlayer[letter][x].setStyle("-fx-base: #99ff66;");
 					SetText(text, "The computer has attacked " + (char) asciiLetter + x + " and missed!");
 					boardPlayer[letter][x].setDisable(true);
@@ -181,24 +131,20 @@ public class App extends Application {
 				} else if (refBoard[letter][x] != '*' && refBoard[letter][x] != 'H' && refBoard[letter][x] != 'M' && refBoard[letter][x]!='E' && refBoard[letter][x]!='I') {
 					String boatHit = (refBoard[letter][x] == 'C' ? "Carrier!" : refBoard[letter][x] == 'B' ? "Battleship!" : refBoard[letter][x] == 'S' ? "Submarine!" : refBoard[letter][x] == 'D' ? "Destroyer!" : "Patrol Boat!");
 					SetText(text, "The oponent has attacked " + (char) asciiLetter + x + " and hit your " + boatHit + "\n"); // get what ship the computer hit
-                                        connection.SendData(String.valueOf(refBoard[letter][x]));
-					checkBoat(text, refBoard, letter, x, "The oponent has sunk your ");
 					boardPlayer[letter][x].setStyle("-fx-base: #ff6666;");
 					boardPlayer[letter][x].setDisable(true);
 
 				}
                                  else if(refBoard[letter][x]=='E'){
                                     SetText(text, "The oponent has attacked " + (char) asciiLetter + x + " and hit your Mine! " + "\n");
-                                    map.MineHit(letter, x);
+                                   // map.MineHit(letter, x);
                                     boardPlayer[letter][x].setStyle("-fx-base: #ff6666;");
-                                    connection.SendData(String.valueOf(refBoard[letter][x]));
                                     refBoard[letter][x] = 'H';
                                 }
                                  else if(refBoard[letter][x]=='I'){
                                     SetText(text, "The oponent has attacked " + (char) asciiLetter + x + " and hit your Island! " + "\n");
-                                    map.DamageIsland(letter, x);
+                                    //map.DamageIsland(letter, x);
                                     boardPlayer[letter][x].setStyle("-fx-base: #ff6666;");
-                                    connection.SendData(String.valueOf(refBoard[letter][x]));
                                     refBoard[letter][x] = 'H';
                                 }
 			}
@@ -206,38 +152,30 @@ public class App extends Application {
 		
 	}
 	
-	public static void checkBoat(Label text, char[][] refBoard, int y, int x, String phrase) {
-		for (int row = 0; row < refBoard.length; row++) {
-			for (int col = 0; col < refBoard[row].length; col++) {
-				if (refBoard[row][col] == refBoard[y][x]) {
-					switch (refBoard[y][x]) {
-						case 'C':
-							map.DamageShip(0, 1);
-							if (map.CheckShip(0) == 0) SetText(text, phrase + "Carrier!");
-							break;
-						case 'B':
-							map.DamageShip(1, 1);
-							if (map.CheckShip(1) == 0) SetText(text, phrase + "Battleship!");
-							break;
-						case 'S':
-							map.DamageShip(2, 1);
-							if (map.CheckShip(2) == 0) SetText(text, phrase + "Submarine!");
-							break;
-						case 'D':
-							map.DamageShip(3, 1);
-							if (map.CheckShip(3) == 0) SetText(text, phrase + "Destroyer!");
-							break;
-						case 'P':
-							map.DamageShip(4, 1);
-							if (map.CheckShip(4) == 0) SetText(text, phrase + "Patrol Boat!");
-							break;
-					}
-				refBoard[y][x] = 'H';
-				}
-			}
-		}
-	}
-
+	public static void checkBoat(char letter) {
+		
+            switch (letter) {
+                case 'C':
+                    SetText(cpu, "The oponent has sunk your " + "Carrier!");
+                    break;
+                case 'B':
+                    SetText(cpu, "The oponent has sunk your " + "Battleship!");
+                    break;
+                case 'S':
+                    SetText(cpu, "The oponent has sunk your " + "Submarine!");
+                    break;
+                case 'D':
+                    SetText(cpu, "The oponent has sunk your " + "Destroyer!");
+                    break;
+                case 'P':
+                    SetText(cpu, "The oponent has sunk your " + "Patrol Boat!");
+                    break;
+            }
+    }
+			
+		
+	
+/*
 	public static void whenWin(char[][] cpuTxt, char[][] playerTxt) {
 		if (opponentHealth == 0 || player1.GetHealth() == 0) {
 			canMove = false;
@@ -282,7 +220,7 @@ public class App extends Application {
 	        newWindow.show();
 		}
 	}
-
+*/
         @Override
 	public void start(Stage primaryStage) throws IOException   {
 
@@ -416,6 +354,10 @@ public class App extends Application {
  
     }
     
+    public static void RecieveFleet(String[] fleet){
+        data = fleet;
+    }
+    
     public static void OpponentConnected(){
         SetText(cpuText, "Oponent connected!");
     }
@@ -430,7 +372,6 @@ public class App extends Application {
 			SetText(playerText, "You have missed sir!");
 			boardCPU[coordX][coordY].setStyle("-fx-base: #ff6666;");
 		} else if (!letter.equals('*') && !letter.equals('M') && !letter.equals('I')) {
-			opponentHealth--;
                         cpuBord[coordX][coordY] = letter.charAt(0);
 			SetText(playerText, "Direct hit, nice shot sir!");
                         cpuBord[coordX][coordY] = 'H';

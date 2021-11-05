@@ -1,3 +1,5 @@
+package GameObjects;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -7,7 +9,7 @@
  *
  * @author auris233
  */
-public class Ship {
+public class Ship extends Object {
     public char type;
     public int health;
     public boolean isAlive;
@@ -15,26 +17,12 @@ public class Ship {
     public int[] coordY;
     public int counter = 0;
 
-    public Ship(char Type){
+    public Ship(char Type, int size){
         type = Type;
+        coordX = new int[size];
+        coordY = new int[size];
+        health = size;
         isAlive = true;
-        if(type=='C'){
-            coordX = new int[5];
-            coordY = new int[5];
-        }
-        if(type=='B'){
-            coordX = new int[4];
-            coordY = new int[4];
-        }
-        if(type=='S' || type=='D'){
-            coordX = new int[3];
-            coordY = new int[3];
-        }
-        if(type=='P'){
-            coordX = new int[2];
-            coordY = new int[2];
-        }
-            
     }
   
     public void TakeHit(int damage){
@@ -46,7 +34,6 @@ public class Ship {
     public void Add(int x, int y){
         coordX[counter] = x;
         coordY[counter] = y;
-        health++;
         counter++;
     }
     

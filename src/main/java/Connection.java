@@ -1,4 +1,5 @@
 
+import GameObjects.Player;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -80,6 +81,21 @@ public class Connection
                     }
                     if(data.length()==1){
                         App.PlayerResult(data);
+                    }
+                    if(data.equals("setup")){
+                        String[] fleet = new String[10];
+                        for (int i = 0; i < 10; i++) {
+                            try {
+                                fleet[i] = bf.readLine();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        App.RecieveFleet(fleet);
+                    }
+                    if (data.contains("sink")) {
+                        char letter = data.split(" ")[1].charAt(0);
+                        App.checkBoat(letter);
                     }
                     data = "";    
                 }
