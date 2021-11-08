@@ -1,3 +1,7 @@
+import Command.PlayerController;
+import Command.ShootCommand;
+import Command.SkipCommand;
+import Command.SurrenderCommand;
 import GameObjects.Mine;
 import GameObjects.Player;
 import GameObjects.Ship;
@@ -89,11 +93,43 @@ public class Server  {
         System.out.println(str);
         pr2.println(str);
         pr2.flush();
-        String strLetter = CheckHit(str, fleet2, player2); 
-        System.out.println(strLetter);
-        pr1.println(strLetter);
-        pr1.flush();
-       
+        PlayerController pC = new PlayerController();
+        if(str.equals("skip")){
+            pC.run(new SkipCommand(player1));
+        }
+        else if(str.equals("surrender")){
+            pC.run(new SurrenderCommand(player1));
+        }
+        else
+            pC.run(new ShootCommand(player1));
+        
+        if (player1.status.equals("shoot")) {
+            String strLetter = CheckHit(str, fleet2, player2);
+            System.out.println(strLetter);
+            if (strLetter.contains("sink")) {
+                pr2.println(strLetter);
+                pr2.flush();
+                pr1.println(strLetter.split(" ")[1]);
+                pr1.flush();
+            } else {
+                pr1.println(strLetter);
+                pr1.flush();
+            }
+            if (player2.GetHealth() <= 0) {
+                pr1.println("win");
+                pr1.flush();
+                pr2.println("lose");
+                pr2.flush();
+            }
+        }
+        if(player1.status.equals("skip")){
+            pr2.println("skip");
+            pr2.flush();
+        }
+        if(player1.status.equals("surrender")){
+            pr2.println("surrender");
+            pr2.flush();
+        }
     }
     
     public static void ReadPlayer2(BufferedReader bf2, BufferedReader bf) throws IOException{
@@ -101,24 +137,57 @@ public class Server  {
         System.out.println(str);
         pr1.println(str);
         pr1.flush();
-        String strLetter = CheckHit(str, fleet1, player1); 
-        System.out.println(strLetter);
-        pr2.println(strLetter);
-        pr2.flush();
-      
+        PlayerController pC = new PlayerController();
+        if(str.equals("skip")){
+            pC.run(new SkipCommand(player2));
+        }
+        else if(str.equals("surrender")){
+            pC.run(new SurrenderCommand(player2));
+        }
+        else
+            pC.run(new ShootCommand(player2));
+        
+        if (player2.status.equals("shoot")) {
+            String strLetter = CheckHit(str, fleet1, player1);
+            System.out.println(strLetter);
+            if (strLetter.contains("sink")) {
+                pr1.println(strLetter);
+                pr1.flush();
+                pr2.println(strLetter.split(" ")[1]);
+                pr2.flush();
+            } else {
+                pr2.println(strLetter);
+                pr2.flush();
+            }
+            if (player1.GetHealth() <= 0) {
+                pr2.println("win");
+                pr2.flush();
+                pr1.println("lose");
+                pr1.flush();
+            }
+        }
+        if(player2.status.equals("skip")){
+            pr1.println("skip");
+            pr1.flush();
+        }
+        if(player2.status.equals("surrender")){
+            pr1.println("surrender");
+            pr1.flush();
+        }
     }
     
     //Game logic
-    public static String CheckHit(String data, char[][] refBoard, Player player){
+        public static String CheckHit(String data, char[][] refBoard, Player player){
         int letter = Integer.parseInt(data.split(" ")[0]);
         int x = Integer.parseInt(data.split(" ")[1]);
         String result = "";
 
         if (refBoard[letter][x] != 'M' || refBoard[letter][x] != 'H') {
             if (refBoard[letter][x] == '*') {
-                refBoard[letter][x] = 'M';        
-
-            } else if (refBoard[letter][x] != '*' && refBoard[letter][x] != 'H' && refBoard[letter][x] != 'M' && refBoard[letter][x] != 'E' && refBoard[letter][x] != 'I') {
+                refBoard[letter][x] = 'M';
+                result = String.valueOf('M');   
+            } 
+            else if (refBoard[letter][x] != '*' && refBoard[letter][x] != 'H' && refBoard[letter][x] != 'M' && refBoard[letter][x] != 'E' && refBoard[letter][x] != 'I') {
               char ship = checkBoat(refBoard[letter][x], player);
               if(ship!='n')
                 result = "sink " + ship;
@@ -127,8 +196,11 @@ public class Server  {
                 
             } else if (refBoard[letter][x] == 'E') {   
                 player.map.MineHit(letter, x);
-            } else if (refBoard[letter][x] == 'I') {
+                result = String.valueOf('E');
+            } 
+            else if (refBoard[letter][x] == 'I') {
                 player.map.DamageIsland(letter, x);
+                result = String.valueOf('I');
             }
         }
         return result;

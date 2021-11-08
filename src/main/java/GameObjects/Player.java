@@ -17,6 +17,7 @@ public class Player  {
     public String name;
     public int hits;
     public int misses;
+    public String status;
 
     public Player(){
         map = new Map();
@@ -31,10 +32,25 @@ public class Player  {
     
     public int GetHealth(){
         int health = 0;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
           health += map.CheckShip(i);
         }
         return health;
+    }
+    
+
+    
+    
+    public void Shoot(String data){
+       status = data; 
+    }
+    
+    public void Skip(){
+        status = "skip";
+    }
+    
+    public void Surrender(){
+        status = "surrender";
     }
     
 

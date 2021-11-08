@@ -50,6 +50,8 @@ public class App extends Application {
 	public static StackPane label;
         public static Button[][] boardCPU = new Button[10][10];
 	public static Button[][] boardPlayer = new Button[10][10];
+        public static Button skip;
+        public static Button surrender;
         
         public static int coordX;
         public static int coordY;
@@ -125,7 +127,7 @@ public class App extends Application {
 				if (refBoard[letter][x] == '*') {
 					refBoard[letter][x] = 'M';
 					boardPlayer[letter][x].setStyle("-fx-base: #99ff66;");
-					SetText(text, "The computer has attacked " + (char) asciiLetter + x + " and missed!");
+					SetText(text, "The oponent has attacked " + (char) asciiLetter + x + " and missed!");
 					boardPlayer[letter][x].setDisable(true);
                                         
 				} else if (refBoard[letter][x] != '*' && refBoard[letter][x] != 'H' && refBoard[letter][x] != 'M' && refBoard[letter][x]!='E' && refBoard[letter][x]!='I') {
@@ -156,37 +158,42 @@ public class App extends Application {
 		
             switch (letter) {
                 case 'C':
-                    SetText(cpu, "The oponent has sunk your " + "Carrier!");
+                    SetText(cpuText, "The oponent has sunk your " + "Carrier!");
                     break;
                 case 'B':
-                    SetText(cpu, "The oponent has sunk your " + "Battleship!");
+                    SetText(cpuText, "The oponent has sunk your " + "Battleship!");
                     break;
                 case 'S':
-                    SetText(cpu, "The oponent has sunk your " + "Submarine!");
+                    SetText(cpuText, "The oponent has sunk your " + "Submarine!");
                     break;
                 case 'D':
-                    SetText(cpu, "The oponent has sunk your " + "Destroyer!");
+                    SetText(cpuText, "The oponent has sunk your " + "Destroyer!");
                     break;
                 case 'P':
-                    SetText(cpu, "The oponent has sunk your " + "Patrol Boat!");
+                    SetText(cpuText, "The oponent has sunk your " + "Patrol Boat!");
                     break;
             }
     }
 			
 		
 	
-/*
-	public static void whenWin(char[][] cpuTxt, char[][] playerTxt) {
-		if (opponentHealth == 0 || player1.GetHealth() == 0) {
-			canMove = false;
-			Stage newWindow = new Stage();
+
+        public static void whenWin(String result) {
+            Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                canMove = false;
+		Stage newWindow = new Stage();
 	        newWindow.setTitle("Message");
                 String text = "";
                 Label label;
-                if(opponentHealth == 0)
+                if(result.equals("win"))
 	           text = "You won!";
-                if(player1.GetHealth()==0)
-                   text = "You lost!";    
+                if(result.equals("lose"))
+                   text = "You lost!";
+                if(result.equals("surrender"))
+                   text = "Opponent surrendered!";
+                
                 
                 label = new Label(text);
 	        Button okBtn = new Button("OK");
@@ -201,8 +208,6 @@ public class App extends Application {
 				for (int col = 0; col < boardCPU[row].length; col++) {
 					boardCPU[row][col].setStyle("");
 					boardPlayer[row][col].setStyle("");
-					if (playerTxt[row][col] == 'H' || playerTxt[row][col] == 'M') boardCPU[row][col].setStyle("-fx-base: #cccccc;");
-					if (cpuTxt[row][col] == 'H' || cpuTxt[row][col] == 'M') boardPlayer[row][col].setStyle("-fx-base: #cccccc;");
 					boardCPU[row][col].setDisable(true);
 					boardPlayer[row][col].setDisable(true);
 				}
@@ -218,9 +223,11 @@ public class App extends Application {
 			okBtn.setOnAction(event);
 	        newWindow.setScene(secondScene);
 	        newWindow.show();
-		}
 	}
-*/
+        });
+        }
+	
+
         @Override
 	public void start(Stage primaryStage) throws IOException   {
 
@@ -260,6 +267,27 @@ public class App extends Application {
 	GridPane buttonsGrid_cpu = new GridPane();
 	makeButton(buttonsGrid_cpu, boardPlayer, playerBord, cpuText, boardCPU,  cpuBord, playerText, 1); //Player board
 	makeButton(buttonsGrid_player, boardCPU,  cpuBord, playerText, boardPlayer, playerBord, cpuText, 0); //CPU board
+        
+        skip = new Button("Skip");
+        surrender = new Button("Surrender");
+        
+            EventHandler<ActionEvent> skipEvent = new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent e) {
+                   connection.SendData("skip");
+                   playerText.setText("You skipped!");
+                   DisableButtons(true);
+                }
+            };
+            EventHandler<ActionEvent> surrenderEvent = new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent e) {
+                   connection.SendData("surrender");
+                   playerText.setText("Loser...");
+                   DisableButtons(true);
+                   whenWin("lose");
+                }
+            };
+        skip.setOnAction(skipEvent);
+        surrender.setOnAction(surrenderEvent);
         
         loadFile(playerBord);
         connection.SendData("loaded");
@@ -315,6 +343,8 @@ public class App extends Application {
         mainPane.add(playerText, 1, 4);
         mainPane.add(cpu, 3, 3);
         mainPane.add(cpuText, 3, 4);
+        mainPane.add(skip, 1, 5);
+        mainPane.add(surrender, 1, 6);
         primaryStage.setScene(scene);
         primaryStage.show();
          
@@ -328,6 +358,8 @@ public class App extends Application {
                    boardCPU[row][col].setDisable(true);   
             }
         }
+        skip.setDisable(set);
+        surrender.setDisable(set);
     }
 
     public static void SetText(Label label, String text){
@@ -360,6 +392,11 @@ public class App extends Application {
     
     public static void OpponentConnected(){
         SetText(cpuText, "Oponent connected!");
+    }
+    
+    public static void OpponentSkip(){
+        SetText(cpuText, "Oponent skipped the move!");
+        DisableButtons(false);
     }
     
     public static void ConnectedToServer(){

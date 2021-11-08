@@ -97,6 +97,15 @@ public class Connection
                         char letter = data.split(" ")[1].charAt(0);
                         App.checkBoat(letter);
                     }
+                    if (data.equals("win") || data.equals("lose")) {     
+                        App.whenWin(data);
+                    }
+                    if (data.equals("skip")) {     
+                        App.OpponentSkip();
+                    }
+                    if (data.equals("surrender")) {     
+                        App.whenWin("surrender");
+                    }
                     data = "";    
                 }
              }
