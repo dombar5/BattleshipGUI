@@ -1,5 +1,8 @@
 package GameObjects;
 
+import Observer.IObserver;
+import Observer.Server;
+
 
 
 /*
@@ -11,7 +14,7 @@ package GameObjects;
  *
  * @author auris233
  */
-public class Player  {
+public abstract class Player implements IObserver  {
     public boolean isFirst;
     public Map map;
     public String name;
@@ -24,6 +27,7 @@ public class Player  {
         hits = 0;
         misses = 0;
     }
+    
 
     public void Hit(boolean shot){
         if(shot) hits++;
@@ -52,6 +56,11 @@ public class Player  {
     public void Surrender(){
         status = "surrender";
     }
+
+    @Override
+    public void update( String msg ) {
+		System.out.println(this.name + " got message: " + msg);
+	}
     
 
 }

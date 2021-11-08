@@ -1,15 +1,15 @@
+package Observer;
+
 import Command.PlayerController;
 import Command.ShootCommand;
 import Command.SkipCommand;
 import Command.SurrenderCommand;
 import GameObjects.Mine;
 import GameObjects.Player;
-import GameObjects.Ship;
 import java.net.*;
 import java.io.*;
 import java.util.Random;
-import javafx.scene.control.Label;
-public class Server  {
+public class Server extends Subject  {
    private static Socket s1;
    private static Socket s2;
    private static InputStreamReader in;
@@ -18,13 +18,14 @@ public class Server  {
    private static BufferedReader bf2;
    private static PrintWriter pr1;
    private static PrintWriter pr2;
-   private static int fileCount = 0;
    private static Player player1;
    private static Player player2;
-   private static char[][] fleet1 = new char[10][10];
-   private static char[][] fleet2 = new char[10][10];
+   private static final char[][] fleet1 = new char[10][10];
+   private static final char[][] fleet2 = new char[10][10];
+   private static Subject server = new Server();
    
     public static void main(String[] args) throws IOException{
+        
         int playerCount = 1;
 
          Random random = new Random();
@@ -43,9 +44,21 @@ public class Server  {
         playerCount++;
         pr1.println("connected");
         pr1.flush();
-        
-        player1 = new Player();
+        player1  = new Player(){
+            @Override
+            public void update(String data) {
+            }
+
+            @Override
+            public void notifyServer(String result) {
+            }
+
+            @Override
+            public void setServer(Server server) {
+            }
+        };
         SetPlayer1(island, mine, fleet1, player1);
+        server.attach(player1);
         
         s2 = ss.accept();
        
@@ -55,10 +68,21 @@ public class Server  {
         
         
         pr2 = new PrintWriter(s2.getOutputStream());
-        
-        player2 = new Player();
+        player2 = new Player(){
+            @Override
+            public void update(String data) {
+            }
+
+            @Override
+            public void notifyServer(String result) {
+            }
+
+            @Override
+            public void setServer(Server server) {
+            }     
+        };
         SetPlayer2(island, mine, fleet2, player2);
-        
+        server.attach(player2);
         pr1.println("opponent connected");
         pr1.flush();
         
@@ -120,6 +144,7 @@ public class Server  {
                 pr1.flush();
                 pr2.println("lose");
                 pr2.flush();
+                server.notifyAll("Game over");
             }
         }
         if(player1.status.equals("skip")){
@@ -129,6 +154,7 @@ public class Server  {
         if(player1.status.equals("surrender")){
             pr2.println("surrender");
             pr2.flush();
+            server.notifyAll("Game over");
         }
     }
     
@@ -164,6 +190,9 @@ public class Server  {
                 pr2.flush();
                 pr1.println("lose");
                 pr1.flush();
+                server.notifyAll("Game over");
+                server.detach(player1);
+                server.detach(player2);
             }
         }
         if(player2.status.equals("skip")){
@@ -173,6 +202,9 @@ public class Server  {
         if(player2.status.equals("surrender")){
             pr1.println("surrender");
             pr1.flush();
+            server.notifyAll("Game over");
+            server.detach(player1);
+            server.detach(player2);
         }
     }
     
