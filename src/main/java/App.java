@@ -257,6 +257,7 @@ public class App extends Application {
         skip = new Button("Skip");
         surrender = new Button("Surrender");
         
+        
             EventHandler<ActionEvent> skipEvent = new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent e) {
                    connection.SendData("skip");
@@ -377,16 +378,16 @@ public class App extends Application {
     }
     
     public static void OpponentConnected(){
-        SetText(cpuText, "Oponent connected!");
+        SetText(cpuText, "Opponent connected!");
     }
     
     public static void OpponentSkip(){
-        SetText(cpuText, "Oponent skipped the move!");
+        SetText(cpuText, "Opponent skipped the move!");
         DisableButtons(false);
     }
     
     public static void ConnectedToServer(){
-        SetText(playerText, "Connection succesfull!");
+        SetText(playerText, "Connection successful!");
     }
     
     public static void PlayerResult(String letter){
@@ -394,17 +395,24 @@ public class App extends Application {
 			cpuBord[coordX][coordY] = 'M';
 			SetText(playerText, "You have missed sir!");
 			boardCPU[coordX][coordY].setStyle("-fx-base: #ff6666;");
-		} else if (!letter.equals('*') && !letter.equals('M') && !letter.equals('I')) {
+		}
+                else if (letter.equals('I')) {
+                        cpuBord[coordX][coordY] = 'H';
+			SetText(playerText, "You hit an island sir!");
+			boardCPU[coordX][coordY].setStyle("-fx-base: #99ff66;");
+		}
+                else if (letter.equals('E')) {
+                        cpuBord[coordX][coordY] = 'H';
+			SetText(playerText, "Ouch! You hit a mine...");
+			boardCPU[coordX][coordY].setStyle("-fx-base: #99ff66;");
+		}
+                else if (!letter.equals('*') && !letter.equals('M') && !letter.equals('I') && !letter.equals('E')) {
                         cpuBord[coordX][coordY] = letter.charAt(0);
 			SetText(playerText, "Direct hit, nice shot sir!");
                         cpuBord[coordX][coordY] = 'H';
 			boardCPU[coordX][coordY].setStyle("-fx-base: #99ff66;");	
 		}
-                else if (letter.equals('E') || letter.equals('I')) {
-                        cpuBord[coordX][coordY] = 'H';
-			SetText(playerText, "Direct hit, nice shot sir!");
-			boardCPU[coordX][coordY].setStyle("-fx-base: #99ff66;");
-		}
+                
     }
     
     public static void EnemyResults(String data) throws IOException{

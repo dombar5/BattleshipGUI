@@ -18,6 +18,7 @@ public class Map {
     public Ship[] ships;
     public List<Mine> mines;
     public int mineMap = 0;
+    public int mineDamage = 0;
 
     public Map(){
         ships = new Ship[5];
@@ -43,13 +44,13 @@ public class Map {
         if(island.isActive) island.TakeHit(x, y);
     }
 
-    public void MineHit(int x, int y){
+    public int MineHitEnemy(int x, int y){
         for (int i = 0; i < mines.size(); i++) {
             if(mines.get(i).coordX==x && mines.get(i).coordY==y){
-                mines.get(i).Explode();
+                mineDamage += mines.get(i).Explode();
             }
         }
-
+        return mineDamage;
     }
     
     public void AddShipPart(char type, int x, int y){

@@ -21,11 +21,13 @@ public abstract class Player implements IObserver  {
     public int hits;
     public int misses;
     public String status;
+    public int mineDamage;
 
     public Player(){
         map = new Map();
         hits = 0;
         misses = 0;
+        mineDamage = 0;
     }
     
 
@@ -39,11 +41,17 @@ public abstract class Player implements IObserver  {
         for (int i = 0; i < 5; i++) {
           health += map.CheckShip(i);
         }
+        health -= getMineDamage();
         return health;
     }
     
-
+    public void setMineDamage(int dmg){
+        this.mineDamage = dmg;
+    }
     
+    public int getMineDamage(){
+        return this.mineDamage;
+    }
     
     public void Shoot(String data){
        status = data; 

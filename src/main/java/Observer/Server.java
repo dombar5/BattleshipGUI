@@ -6,6 +6,7 @@ import Command.SkipCommand;
 import Command.SurrenderCommand;
 import GameObjects.Mine;
 import GameObjects.Player;
+import Strategy.*;
 import java.net.*;
 import java.io.*;
 import java.util.Random;
@@ -127,8 +128,9 @@ public class Server extends Subject  {
         else
             pC.run(new ShootCommand(player1));
         
+        
         if (player1.status.equals("shoot")) {
-            String strLetter = CheckHit(str, fleet2, player2);
+            String strLetter = CheckHit(str, fleet2, player2, player1);
             System.out.println(strLetter);
             if (strLetter.contains("sink")) {
                 pr2.println(strLetter);
@@ -139,12 +141,21 @@ public class Server extends Subject  {
                 pr1.println(strLetter);
                 pr1.flush();
             }
+            /*if (player2.GetHealth() <= 0) {
+                pr1.println("win");
+                pr1.flush();
+                pr2.println("lose");
+                pr2.flush();
+                server.notifyAll("Game over");
+            }*/
             if (player2.GetHealth() <= 0) {
                 pr1.println("win");
                 pr1.flush();
                 pr2.println("lose");
                 pr2.flush();
                 server.notifyAll("Game over");
+                server.detach(player1);
+                server.detach(player2);
             }
         }
         if(player1.status.equals("skip")){
@@ -173,8 +184,9 @@ public class Server extends Subject  {
         else
             pC.run(new ShootCommand(player2));
         
+        
         if (player2.status.equals("shoot")) {
-            String strLetter = CheckHit(str, fleet1, player1);
+            String strLetter = CheckHit(str, fleet1, player1, player2);
             System.out.println(strLetter);
             if (strLetter.contains("sink")) {
                 pr1.println(strLetter);
@@ -185,11 +197,20 @@ public class Server extends Subject  {
                 pr2.println(strLetter);
                 pr2.flush();
             }
-            if (player1.GetHealth() <= 0) {
+            /*if (player1.GetHealth() <= 0) {
                 pr2.println("win");
                 pr2.flush();
                 pr1.println("lose");
                 pr1.flush();
+                server.notifyAll("Game over");
+                server.detach(player1);
+                server.detach(player2);
+            }*/
+            if (player1.GetHealth() <= 0) {
+                pr1.println("lose");
+                pr1.flush();
+                pr2.println("win");
+                pr2.flush();
                 server.notifyAll("Game over");
                 server.detach(player1);
                 server.detach(player2);
@@ -209,7 +230,7 @@ public class Server extends Subject  {
     }
     
     //Game logic
-        public static String CheckHit(String data, char[][] refBoard, Player player){
+        public static String CheckHit(String data, char[][] refBoard, Player enemy, Player player){
         int letter = Integer.parseInt(data.split(" ")[0]);
         int x = Integer.parseInt(data.split(" ")[1]);
         String result = "";
@@ -220,18 +241,18 @@ public class Server extends Subject  {
                 result = String.valueOf('M');   
             } 
             else if (refBoard[letter][x] != '*' && refBoard[letter][x] != 'H' && refBoard[letter][x] != 'M' && refBoard[letter][x] != 'E' && refBoard[letter][x] != 'I') {
-              char ship = checkBoat(refBoard[letter][x], player);
+              char ship = checkBoat(refBoard[letter][x], enemy);
               if(ship!='n')
                 result = "sink " + ship;
               else
                 result = String.valueOf(refBoard[letter][x]);
                 
             } else if (refBoard[letter][x] == 'E') {   
-                player.map.MineHit(letter, x);
+                player.setMineDamage(enemy.map.MineHitEnemy(letter, x));
                 result = String.valueOf('E');
             } 
             else if (refBoard[letter][x] == 'I') {
-                player.map.DamageIsland(letter, x);
+                enemy.map.DamageIsland(letter, x);
                 result = String.valueOf('I');
             }
         }
@@ -454,15 +475,24 @@ public class Server extends Subject  {
     }   
     public static void GenerateMines(int amount, char[][] fleet, Player player){
         int counter = 0;
-        int x, y;
+        int x, y, dmg;
         
         while(counter<amount){
             Random random = new Random();
             x = random.nextInt(10 - 0) + 0;
             y = random.nextInt(10 - 0) + 0;
+            dmg = random.nextInt(3 - 0);
             if(fleet[x][y]=='*'){
                 fleet[x][y] = 'E';
                 Mine mine = new Mine(x,y);
+                
+                if(dmg == 1)
+                    mine.setDamageAlgo(new LowDamage());
+                else if(dmg == 2)
+                    mine.setDamageAlgo(new MediumDamage());
+                else
+                    mine.setDamageAlgo(new HighDamage());
+                
                 player.map.mines.add(mine);
                 counter++;
             }
