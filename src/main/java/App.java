@@ -31,6 +31,7 @@ public class App extends Application {
         //UI stuff
         public static Label player;
         public static Label cpu;
+        public static Label lifeCount;
         public static Label playerText = new Label("Connecting to server...");
 	public static Label cpuText = new Label("Waiting for oponent...");   
 	public static StackPane label;
@@ -247,6 +248,10 @@ public class App extends Application {
 	
 	cpuText.setStyle("-fx-font: 16.5 arial; -fx-text-fill: #ff5050");
 	label = new StackPane(player);
+        
+        lifeCount = new Label("Lifes: 17");
+        lifeCount.setStyle("-fx-font: 15 arial; -fx-font-weight: bold; -fx-text-fill: #21211f;");
+	lifeCount.setPadding(new Insets(0, 0, 0, 0));
                 
 //////////////////  Buttons  //////////////////
 	GridPane buttonsGrid_player = new GridPane();
@@ -332,6 +337,7 @@ public class App extends Application {
         mainPane.add(cpuText, 3, 4);
         mainPane.add(skip, 1, 5);
         mainPane.add(surrender, 1, 6);
+        mainPane.add(lifeCount, 1,0);
         primaryStage.setScene(scene);
         primaryStage.show();
          
@@ -373,6 +379,10 @@ public class App extends Application {
  
     }
     
+    public static void SetHealth(int health){
+        SetText(lifeCount, "Health " + health);
+    }
+    
     public static void RecieveFleet(String[] fleet){
         data = fleet;
     }
@@ -396,12 +406,12 @@ public class App extends Application {
 			SetText(playerText, "You have missed sir!");
 			boardCPU[coordX][coordY].setStyle("-fx-base: #ff6666;");
 		}
-                else if (letter.equals('I')) {
+                else if (letter.charAt(0)=='I') {
                         cpuBord[coordX][coordY] = 'H';
 			SetText(playerText, "You hit an island sir!");
 			boardCPU[coordX][coordY].setStyle("-fx-base: #99ff66;");
 		}
-                else if (letter.equals('E')) {
+                else if (letter.charAt(0)=='E') {
                         cpuBord[coordX][coordY] = 'H';
 			SetText(playerText, "Ouch! You hit a mine...");
 			boardCPU[coordX][coordY].setStyle("-fx-base: #99ff66;");

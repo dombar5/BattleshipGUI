@@ -97,6 +97,10 @@ public class Connection
                         char letter = data.split(" ")[1].charAt(0);
                         App.checkBoat(letter);
                     }
+                    if (data.contains("lifes")) {
+                        int health = Integer.parseInt(data.split(" ")[1]);
+                        App.SetHealth(health);
+                    }
                     if (data.equals("win") || data.equals("lose")) {     
                         App.whenWin(data);
                     }

@@ -26,7 +26,7 @@ public class Server extends Subject  {
    private static Subject server = new Server();
    
     public static void main(String[] args) throws IOException{
-        
+        ServerSocket ss = new ServerSocket(4000);
         int playerCount = 1;
 
          Random random = new Random();
@@ -34,17 +34,7 @@ public class Server extends Subject  {
          int mine = random.nextInt(8 - 3) + 3;
         
         
-        ServerSocket ss = new ServerSocket(4000);
-        s1 = ss.accept();
-        in = new InputStreamReader(s1.getInputStream());
-        bf = new BufferedReader(in);
         
-        pr1 = new PrintWriter(s1.getOutputStream());
-       
-        System.out.println("Player " + playerCount + " connected");
-        playerCount++;
-        pr1.println("connected");
-        pr1.flush();
         player1  = new Player(){
             @Override
             public void update(String data) {
@@ -57,18 +47,8 @@ public class Server extends Subject  {
             @Override
             public void setServer(Server server) {
             }
-        };
-        SetPlayer1(island, mine, fleet1, player1);
-        server.attach(player1);
-        
-        s2 = ss.accept();
-       
-        in2 = new InputStreamReader(s2.getInputStream());
-        bf2 = new BufferedReader(in2);
-        System.out.println("Player " + playerCount + " connected");
-        
-        
-        pr2 = new PrintWriter(s2.getOutputStream());
+        }; 
+        String[] fleetString1 = BuilFleet(island, mine, fleet1, player1);
         player2 = new Player(){
             @Override
             public void update(String data) {
@@ -82,10 +62,38 @@ public class Server extends Subject  {
             public void setServer(Server server) {
             }     
         };
-        SetPlayer2(island, mine, fleet2, player2);
+        String[] fleetString2 = BuilFleet(island, mine, fleet2, player2);
+        System.out.println("Maps generated");
+          
+        s1 = ss.accept();
+        in = new InputStreamReader(s1.getInputStream());
+        bf = new BufferedReader(in);
+        
+        pr1 = new PrintWriter(s1.getOutputStream());
+       
+        System.out.println("Player " + playerCount + " connected");
+        playerCount++;
+        pr1.println("connected");
+        pr1.flush();
+       
+        SetPlayer1(fleetString1);
+        server.attach(player1);
+        
+        s2 = ss.accept();
+       
+        in2 = new InputStreamReader(s2.getInputStream());
+        bf2 = new BufferedReader(in2);
+        System.out.println("Player " + playerCount + " connected");
+        
+        
+        pr2 = new PrintWriter(s2.getOutputStream());
+        
+        SetPlayer2(fleetString2);
         server.attach(player2);
+  
         pr1.println("opponent connected");
         pr1.flush();
+        
         
         pr2.println("connected");
         pr2.flush();
@@ -109,7 +117,16 @@ public class Server extends Subject  {
         System.out.println("Game started");
         while(true){
            ReadPlayer1(bf ,bf2);
+           pr1.println("lifes " + player1.GetHealth());
+           pr2.println("lifes " + player2.GetHealth());
+           pr1.flush();
+           pr2.flush();
+           
            ReadPlayer2(bf2, bf);
+           pr1.println("lifes " + player1.GetHealth());
+           pr2.println("lifes " + player2.GetHealth());
+           pr1.flush();
+           pr2.flush();
         }
         
     }
@@ -137,6 +154,7 @@ public class Server extends Subject  {
                 pr2.flush();
                 pr1.println(strLetter.split(" ")[1]);
                 pr1.flush();
+                
             } else {
                 pr1.println(strLetter);
                 pr1.flush();
@@ -157,6 +175,7 @@ public class Server extends Subject  {
                 server.detach(player1);
                 server.detach(player2);
             }
+            
         }
         if(player1.status.equals("skip")){
             pr2.println("skip");
@@ -301,21 +320,19 @@ public class Server extends Subject  {
     
     
     //Send map to players
-    public static void SetPlayer1(int island, int mine, char[][] fleet1, Player player){
-        String[] fleet = BuilFleet(island, mine, fleet1, player);
+    public static void SetPlayer1(String[] fleet1){    
         pr1.println("setup");
         pr1.flush();
         for (int i = 0; i < 10; i++) {
-            pr1.println(fleet[i]);
+            pr1.println(fleet1[i]);
             pr1.flush();
         }
     }
-    public static void SetPlayer2(int island, int mine, char[][] fleet2, Player player){
-        String[] fleet = BuilFleet(island, mine, fleet2, player);
+    public static void SetPlayer2(String[] fleet2){
         pr2.println("setup");
         pr2.flush();
         for (int i = 0; i < 10; i++) {
-            pr2.println(fleet[i]);
+            pr2.println(fleet2[i]);
             pr2.flush();
         }
     }
