@@ -1,3 +1,5 @@
+import FlyWeight.Texture;
+import FlyWeight.TextureFactory;
 import javafx.scene.layout.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -40,17 +42,25 @@ public class App extends Application {
         public static Button skip;
         public static Button surrender;
         
+        //Graphics
+        public static Image[] water = new Image[3];
+        public static Image dirt = new Image("file:dirt.jpg");
+        
         public static int coordX;
         public static int coordY;
         public static int opponentHealth = 17;
         public static String[] data;
-        
+        public static TextureFactory factory;
 
         
     public static void main(String[] args) throws IOException {
         
         connection = new Connection();
         connection.run();
+        factory = new TextureFactory();
+ 
+        
+                
         launch(args);
 
     }
@@ -63,15 +73,25 @@ public class App extends Application {
             String[] line = data[i].split(" ");
             for (int j = 0; j < 10; j++) {
                 board[i][j] = line[j].charAt(0);
+                }
+            }
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                Texture t = factory.getTexture("file:water2.jpg");
+                t.draw(boardCPU[i][j]);
+                
             }
         }
-    }
-	
+        
+            }
+
 	public static void makeButton(GridPane buttons, Button[][] buttonArray, char[][] textBoard, Label words, Button[][] buttonArray2, char[][] textBoard2, Label words2, int identifier) {
         int y = 1;
         for (int row = 0; row < buttonArray.length; row++) {
 	        for (int col = 0; col < buttonArray[row].length; col++) {
 				buttonArray[row][col] = new Button("");
+                                
+      
 				buttonArray[row][col].setDisable(true);
 				 int x1 = row;
 				 int y1 = col;
@@ -93,6 +113,7 @@ public class App extends Application {
 		        buttonArray[row][col].setMaxHeight(43);
 		        buttonArray[row][col].setMinWidth(43);
 		        buttonArray[row][col].setMaxWidth(43);
+                        
 		        buttons.add(buttonArray[row][col], col, y);
 		        if (col == 9) y++;
         	}
@@ -261,8 +282,8 @@ public class App extends Application {
         
         skip = new Button("Skip");
         surrender = new Button("Surrender");
-        
-        
+
+
             EventHandler<ActionEvent> skipEvent = new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent e) {
                    connection.SendData("skip");
@@ -295,14 +316,20 @@ public class App extends Application {
         }
         for (int row = 0; row < boardPlayer.length; row++) {
             for (int col = 0; col < boardPlayer[row].length; col++) {
-                if(playerBord[row][col]=='*')
-                    boardPlayer[row][col].setText(" ");
+                if(playerBord[row][col]=='*'){
+                   boardPlayer[row][col].setText("");
+                   Texture t = factory.getTexture("file:water1.jpg");
+                   t.draw(boardPlayer[row][col]);    
+                }
                 else
                     boardPlayer[row][col].setText(" " + playerBord[row][col] + " ");
                 if(playerBord[row][col]!='I' && playerBord[row][col]!='*' && playerBord[row][col]!='E')
                     boardPlayer[row][col].setStyle("-fx-base: #ffe23b");
-                else if(playerBord[row][col]=='I')
-                    boardPlayer[row][col].setStyle("-fx-base: #8f4700");
+                else if(playerBord[row][col]=='I'){
+                   boardPlayer[row][col].setText("");
+                    Texture t = factory.getTexture("file:dirt.jpg");
+                    t.draw(boardPlayer[row][col]); 
+                }
                 else if(playerBord[row][col]=='E')
                     boardPlayer[row][col].setStyle("-fx-base: #ff38e8");
                 else if(playerBord[row][col]=='*')
