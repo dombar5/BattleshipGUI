@@ -12,6 +12,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler; 
 import javafx.geometry.Insets;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static javafx.application.Application.launch;
@@ -41,6 +43,11 @@ public class App extends Application {
 	public static Button[][] boardPlayer = new Button[10][10];
         public static Button skip;
         public static Button surrender;
+        public static TextField playerMsg;
+        public static TextArea MsgText;
+        public static Button SendMsg;
+        public static String textMessage;
+        public static String textToDisplay;
         
         //Graphics
         public static Image[] water = new Image[3];
@@ -51,6 +58,9 @@ public class App extends Application {
         public static int opponentHealth = 17;
         public static String[] data;
         public static TextureFactory factory;
+        //public static String[] message;
+        public static List<String> list = new ArrayList<String>();
+
 
         
     public static void main(String[] args) throws IOException {
@@ -282,6 +292,11 @@ public class App extends Application {
         
         skip = new Button("Skip");
         surrender = new Button("Surrender");
+        playerMsg = new TextField();
+        MsgText = new TextArea();
+        MsgText.setEditable(false);
+        SendMsg = new Button("Send");
+        
 
 
             EventHandler<ActionEvent> skipEvent = new EventHandler<ActionEvent>() {
@@ -299,8 +314,15 @@ public class App extends Application {
                    whenWin("lose");
                 }
             };
+            EventHandler<ActionEvent> messageEvent = new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent e) {
+                   connection.SendData("msg$" + playerMsg.getText());
+                   SendMsg.setDisable(true);
+                }
+            };
         skip.setOnAction(skipEvent);
         surrender.setOnAction(surrenderEvent);
+        SendMsg.setOnAction(messageEvent);
         
         loadFile(playerBord);
         connection.SendData("loaded");
@@ -362,9 +384,12 @@ public class App extends Application {
         mainPane.add(playerText, 1, 4);
         mainPane.add(cpu, 3, 3);
         mainPane.add(cpuText, 3, 4);
-        mainPane.add(skip, 1, 5);
-        mainPane.add(surrender, 1, 6);
+        mainPane.add(skip, 2, 5);
+        mainPane.add(surrender, 2, 6);
+        mainPane.add(SendMsg, 2, 4);
         mainPane.add(lifeCount, 1,0);
+        mainPane.add(playerMsg, 1, 4);
+        mainPane.add(MsgText, 1, 5);
         primaryStage.setScene(scene);
         primaryStage.show();
          
@@ -380,6 +405,7 @@ public class App extends Application {
         }
         skip.setDisable(set);
         surrender.setDisable(set);
+        SendMsg.setDisable(set);
     }
 
     public static void SetText(Label label, String text){
@@ -389,7 +415,16 @@ public class App extends Application {
           label.setText(text);
         }
         });  
-    }    
+    }
+
+    public static void SetTextArea(TextArea area, String text){
+       Platform.runLater(new Runnable() {
+        @Override
+        public void run() {
+          area.setText(text);
+        }
+        });  
+    }        
     
     //Server comunication stuff
     public static void GameStart(boolean first) throws IOException{
@@ -421,6 +456,17 @@ public class App extends Application {
     public static void OpponentSkip(){
         SetText(cpuText, "Opponent skipped the move!");
         DisableButtons(false);
+    }
+    
+    public static void ReadMsg(String data){
+        String msg = data.split("\\$")[1];
+        list.add(msg);
+        msg = "";
+        for (String e : list) {
+            msg += e + System.lineSeparator();
+        }
+        SetTextArea(MsgText, msg);
+        System.out.println(list); 
     }
     
     public static void ConnectedToServer(){

@@ -107,6 +107,9 @@ public class Connection
                     if (data.equals("skip")) {     
                         App.OpponentSkip();
                     }
+                    if (data.contains("msg$")) {     
+                        App.ReadMsg(data);
+                    }
                     if (data.equals("surrender")) {     
                         App.whenWin("surrender");
                     }

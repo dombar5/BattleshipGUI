@@ -133,6 +133,11 @@ public class Server extends Subject  {
     public static void ReadPlayer1(BufferedReader bf, BufferedReader bf2) throws IOException{
         String str = bf.readLine();
         System.out.println(str);
+        if(str.contains("msg$")){
+            pr2.println(str);
+            pr2.flush();
+            str = bf.readLine();
+        }
         pr2.println(str);
         pr2.flush();
         PlayerController pC = new PlayerController();
@@ -191,6 +196,11 @@ public class Server extends Subject  {
     public static void ReadPlayer2(BufferedReader bf2, BufferedReader bf) throws IOException{
         String str = bf2.readLine();
         System.out.println(str);
+        if(str.contains("msg$")){
+            pr1.println(str);
+            pr1.flush();
+            str = bf2.readLine();
+        }
         pr1.println(str);
         pr1.flush();
         PlayerController pC = new PlayerController();
