@@ -1,5 +1,6 @@
 import FlyWeight.Texture;
 import FlyWeight.TextureFactory;
+import Interpreter.*;
 import javafx.scene.layout.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -43,11 +44,15 @@ public class App extends Application {
 	public static Button[][] boardPlayer = new Button[10][10];
         public static Button skip;
         public static Button surrender;
+<<<<<<< Updated upstream
         public static TextField playerMsg;
         public static TextArea MsgText;
         public static Button SendMsg;
         public static String textMessage;
         public static String textToDisplay;
+=======
+        public static Label accuracy;
+>>>>>>> Stashed changes
         
         //Graphics
         public static Image[] water = new Image[3];
@@ -58,9 +63,13 @@ public class App extends Application {
         public static int opponentHealth = 17;
         public static String[] data;
         public static TextureFactory factory;
+<<<<<<< Updated upstream
         //public static String[] message;
         public static List<String> list = new ArrayList<String>();
 
+=======
+        public static float acc = 1;
+>>>>>>> Stashed changes
 
         
     public static void main(String[] args) throws IOException {
@@ -274,7 +283,7 @@ public class App extends Application {
         cpu = new Label("Oponent's message:");
         cpu.setStyle("-fx-font: 32 arial; -fx-font-weight: bold; -fx-text-fill: #ff5050");
         cpu.setPadding(new Insets(0, 0, 6, 0));
-        
+        accuracy = new Label("Acc: 1");
 	playerText.setStyle("-fx-font: 16.5 arial; -fx-text-fill: #7070db");
 	
 	cpuText.setStyle("-fx-font: 16.5 arial; -fx-text-fill: #ff5050");
@@ -388,8 +397,12 @@ public class App extends Application {
         mainPane.add(surrender, 2, 6);
         mainPane.add(SendMsg, 2, 4);
         mainPane.add(lifeCount, 1,0);
+<<<<<<< Updated upstream
         mainPane.add(playerMsg, 1, 4);
         mainPane.add(MsgText, 1, 5);
+=======
+        mainPane.add(accuracy, 2,0);
+>>>>>>> Stashed changes
         primaryStage.setScene(scene);
         primaryStage.show();
          
@@ -478,22 +491,42 @@ public class App extends Application {
 			cpuBord[coordX][coordY] = 'M';
 			SetText(playerText, "You have missed sir!");
 			boardCPU[coordX][coordY].setStyle("-fx-base: #ff6666;");
+                        Expression e1 = new Numberr(acc);
+                        Expression e2 = new Numberr(2);
+                        Expression div = new Divide(e1, e2);
+                        acc = div.execute();
+                        SetText(accuracy, "Acc: " + acc );
 		}
                 else if (letter.charAt(0)=='I') {
                         cpuBord[coordX][coordY] = 'H';
 			SetText(playerText, "You hit an island sir!");
 			boardCPU[coordX][coordY].setStyle("-fx-base: #99ff66;");
+                        Expression e1 = new Numberr(acc);
+                        Expression e2 = new Numberr(2);
+                        Expression div = new Multiply(e1, e2);
+                        acc = div.execute();
+                        SetText(accuracy, "Acc: " + acc);
 		}
                 else if (letter.charAt(0)=='E') {
                         cpuBord[coordX][coordY] = 'H';
 			SetText(playerText, "Ouch! You hit a mine...");
 			boardCPU[coordX][coordY].setStyle("-fx-base: #99ff66;");
+                        Expression e1 = new Numberr(acc);
+                        Expression e2 = new Numberr(2);
+                        Expression div = new Divide(e1, e2);
+                        acc = div.execute();
+                        SetText(accuracy, "Acc: " + acc);
 		}
                 else if (!letter.equals('*') && !letter.equals('M') && !letter.equals('I') && !letter.equals('E')) {
                         cpuBord[coordX][coordY] = letter.charAt(0);
 			SetText(playerText, "Direct hit, nice shot sir!");
                         cpuBord[coordX][coordY] = 'H';
 			boardCPU[coordX][coordY].setStyle("-fx-base: #99ff66;");	
+                        Expression e1 = new Numberr(acc);
+                        Expression e2 = new Numberr(2);
+                        Expression div = new Multiply(e1, e2);
+                        acc = div.execute();
+                        SetText(accuracy, "Acc: " + acc);
 		}
                 
     }
