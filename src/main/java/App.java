@@ -44,16 +44,15 @@ public class App extends Application {
 	public static Button[][] boardPlayer = new Button[10][10];
         public static Button skip;
         public static Button surrender;
-<<<<<<< Updated upstream
+
         public static TextField playerMsg;
         public static TextArea MsgText;
         public static Button SendMsg;
         public static String textMessage;
         public static String textToDisplay;
-=======
+
         public static Label accuracy;
->>>>>>> Stashed changes
-        
+
         //Graphics
         public static Image[] water = new Image[3];
         public static Image dirt = new Image("file:dirt.jpg");
@@ -63,13 +62,12 @@ public class App extends Application {
         public static int opponentHealth = 17;
         public static String[] data;
         public static TextureFactory factory;
-<<<<<<< Updated upstream
+
         //public static String[] message;
         public static List<String> list = new ArrayList<String>();
 
-=======
         public static float acc = 1;
->>>>>>> Stashed changes
+
 
         
     public static void main(String[] args) throws IOException {
@@ -397,12 +395,12 @@ public class App extends Application {
         mainPane.add(surrender, 2, 6);
         mainPane.add(SendMsg, 2, 4);
         mainPane.add(lifeCount, 1,0);
-<<<<<<< Updated upstream
+
         mainPane.add(playerMsg, 1, 4);
         mainPane.add(MsgText, 1, 5);
-=======
+
         mainPane.add(accuracy, 2,0);
->>>>>>> Stashed changes
+
         primaryStage.setScene(scene);
         primaryStage.show();
          
