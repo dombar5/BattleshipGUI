@@ -39,6 +39,10 @@ public class Map {
     public int CheckShip(int shipNum){
         return ships[shipNum].health;
     }
+    
+    public void setShipHealth(int shipNum, int newHealth){
+        ships[shipNum].health = newHealth;
+    }
 
     public void DamageIsland(int x, int y){
         if(island.isActive) island.TakeHit(x, y);

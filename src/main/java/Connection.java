@@ -110,6 +110,11 @@ public class Connection
                     if (data.contains("msg$")) {     
                         App.ReadMsg(data);
                     }
+                    if (data.contains("undo")) { 
+                        String coords = data.split(" ")[3] + " " + data.split(" ")[4];
+                        String letter = data.split(" ")[5];
+                        App.getUndo(coords, letter);
+                    }
                     if (data.equals("surrender")) {     
                         App.whenWin("surrender");
                     }

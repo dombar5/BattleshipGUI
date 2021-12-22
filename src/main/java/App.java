@@ -48,6 +48,8 @@ public class App extends Application {
         public static Button SendMsg;
         public static String textMessage;
         public static String textToDisplay;
+        public static Button undo;
+        public static int undoCount = 0;
         
         //Graphics
         public static Image[] water = new Image[3];
@@ -58,7 +60,6 @@ public class App extends Application {
         public static int opponentHealth = 17;
         public static String[] data;
         public static TextureFactory factory;
-        //public static String[] message;
         public static List<String> list = new ArrayList<String>();
 
 
@@ -296,6 +297,8 @@ public class App extends Application {
         MsgText = new TextArea();
         MsgText.setEditable(false);
         SendMsg = new Button("Send");
+        undo = new Button("Undo");
+        
         
 
 
@@ -320,9 +323,17 @@ public class App extends Application {
                    SendMsg.setDisable(true);
                 }
             };
+            EventHandler<ActionEvent> undoEvent = new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent e) {
+                    connection.SendData("undo");
+                    undoCount++;
+                    //undo.setDisable(true);
+                }
+            };
         skip.setOnAction(skipEvent);
         surrender.setOnAction(surrenderEvent);
         SendMsg.setOnAction(messageEvent);
+        undo.setOnAction(undoEvent);
         
         loadFile(playerBord);
         connection.SendData("loaded");
@@ -387,6 +398,7 @@ public class App extends Application {
         mainPane.add(skip, 2, 5);
         mainPane.add(surrender, 2, 6);
         mainPane.add(SendMsg, 2, 4);
+        mainPane.add(undo, 2, 3);
         mainPane.add(lifeCount, 1,0);
         mainPane.add(playerMsg, 1, 4);
         mainPane.add(MsgText, 1, 5);
@@ -406,6 +418,12 @@ public class App extends Application {
         skip.setDisable(set);
         surrender.setDisable(set);
         SendMsg.setDisable(set);
+        if(undoCount < 3) {
+            undo.setDisable(set);
+        }
+        else {
+            undo.setDisable(true);
+        }
     }
 
     public static void SetText(Label label, String text){
@@ -424,7 +442,16 @@ public class App extends Application {
           area.setText(text);
         }
         });  
-    }        
+    }
+    
+    public static void SetTextField(TextField area, String text){
+       Platform.runLater(new Runnable() {
+        @Override
+        public void run() {
+          area.setText(text);
+        }
+        });  
+    }    
     
     //Server comunication stuff
     public static void GameStart(boolean first) throws IOException{
@@ -459,14 +486,37 @@ public class App extends Application {
     }
     
     public static void ReadMsg(String data){
+        String d = data.split("\\$")[0];
         String msg = data.split("\\$")[1];
+        String who = d.split(" ")[0];
+        //String mess = "";
+        
+        if(who.equals("me")) {
+            msg = "me: " + msg;
+        }
+        else if(who.equals("enemy")) {
+            msg = "enemy: " + msg;
+        }
         list.add(msg);
         msg = "";
         for (String e : list) {
             msg += e + System.lineSeparator();
         }
         SetTextArea(MsgText, msg);
-        System.out.println(list); 
+        SetTextField(playerMsg, "");
+    }
+    
+    public static void getUndo(String coords, String letter) {
+        int row = Integer.parseInt(coords.split(" ")[0]);
+        int col = Integer.parseInt(coords.split(" ")[1]);
+        
+             boardPlayer[row][col].setStyle("-fx-base: #ffe23b");
+             boardPlayer[row][col].setDisable(false); 
+             cpuBord[row][col] = letter.charAt(0);
+             //playerBord[row][col] = letter.charAt(0);
+             //boardCPU[row][col].setDisable(false); 
+             
+        
     }
     
     public static void ConnectedToServer(){

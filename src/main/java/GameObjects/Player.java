@@ -2,7 +2,9 @@ package GameObjects;
 
 import Observer.IObserver;
 import Observer.Server;
-
+import Iterator.*;
+import Memento.*;
+import java.util.ArrayList;
 
 
 /*
@@ -22,6 +24,10 @@ public abstract class Player implements IObserver  {
     public int misses;
     public String status;
     public int mineDamage;
+    private ArrayList<Integer> healthList;
+    private ArrayList<Integer> mineHealthList;
+    public Originator org = new Originator(healthList, mineDamage, "111");
+    public Caretaker ct = new Caretaker();
 
     public Player(){
         map = new Map();
@@ -63,6 +69,29 @@ public abstract class Player implements IObserver  {
     
     public void Surrender(){
         status = "surrender";
+    }
+    
+    public void Undo(){
+        Memento restoreState = ct.get( ct.size() - 1 );
+        org.restoreState(restoreState);
+        int i = 0;
+        for (Integer e : org.getList()) {
+            map.setShipHealth(i, e);
+            i++;
+        }
+        for (int a = 0; a < 5; a++) {
+         System.out.println(map.CheckShip(a) + " ");
+        }
+    }
+    
+    public void saveHealth(){
+        healthList = new ArrayList<Integer>(); 
+        for (int i = 0; i < 5; i++) {
+          healthList.add(map.CheckShip(i));
+        }
+        org.setState(healthList, this.mineDamage);
+        Memento state = org.saveState();
+        ct.add(state);
     }
 
     @Override

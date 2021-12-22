@@ -10,6 +10,9 @@ import Strategy.*;
 import java.net.*;
 import java.io.*;
 import java.util.Random;
+import Iterator.*;
+import Memento.*;
+
 public class Server extends Subject  {
    private static Socket s1;
    private static Socket s2;
@@ -24,6 +27,8 @@ public class Server extends Subject  {
    private static final char[][] fleet1 = new char[10][10];
    private static final char[][] fleet2 = new char[10][10];
    private static Subject server = new Server();
+   private static String lastStr;
+   private static String lastLetter;
    
     public static void main(String[] args) throws IOException{
         ServerSocket ss = new ServerSocket(4000);
@@ -32,6 +37,9 @@ public class Server extends Subject  {
          Random random = new Random();
          int island = random.nextInt(6 - 3) + 3;
          int mine = random.nextInt(8 - 3) + 3;
+         HealthList healthListP1 = new HealthList();
+         HealthList healthListP2 = new HealthList();
+         MovesList movesList = new MovesList();
         
         
         
@@ -134,10 +142,23 @@ public class Server extends Subject  {
         String str = bf.readLine();
         System.out.println(str);
         if(str.contains("msg$")){
-            pr2.println(str);
+            pr1.println("me " + str);
+            pr1.flush();
+            pr2.println("enemy " + str);
             pr2.flush();
             str = bf.readLine();
         }
+        if(str.equals("undo")){
+            player1.Undo();
+            player2.Undo();
+            pr1.println("lifes " + player1.GetHealth() + " undo " + lastStr + " " + lastLetter);
+            pr1.flush();
+            pr2.println("lifes " + player2.GetHealth() + " undo " + lastStr + " " + lastLetter);
+            pr2.flush();
+            str = bf.readLine();
+        }
+        player1.saveHealth();
+        player2.saveHealth();
         pr2.println(str);
         pr2.flush();
         PlayerController pC = new PlayerController();
@@ -153,7 +174,9 @@ public class Server extends Subject  {
         
         if (player1.status.equals("shoot")) {
             String strLetter = CheckHit(str, fleet2, player2, player1);
-            System.out.println(strLetter);
+            System.out.println(str);
+            lastStr = str;
+            lastLetter = strLetter;
             if (strLetter.contains("sink")) {
                 pr2.println(strLetter);
                 pr2.flush();
@@ -164,13 +187,6 @@ public class Server extends Subject  {
                 pr1.println(strLetter);
                 pr1.flush();
             }
-            /*if (player2.GetHealth() <= 0) {
-                pr1.println("win");
-                pr1.flush();
-                pr2.println("lose");
-                pr2.flush();
-                server.notifyAll("Game over");
-            }*/
             if (player2.GetHealth() <= 0) {
                 pr1.println("win");
                 pr1.flush();
@@ -197,10 +213,23 @@ public class Server extends Subject  {
         String str = bf2.readLine();
         System.out.println(str);
         if(str.contains("msg$")){
-            pr1.println(str);
+            pr1.println("enemy " + str);
             pr1.flush();
+            pr2.println("me " + str);
+            pr2.flush();
             str = bf2.readLine();
         }
+        if(str.equals("undo")){
+            player1.Undo();
+            player2.Undo();
+            pr1.println("lifes " + player1.GetHealth() + " undo " + lastStr + " " + lastLetter);
+            pr1.flush();
+            pr2.println("lifes " + player2.GetHealth() + " undo " + lastStr + " " + lastLetter);
+            pr2.flush();
+            str = bf2.readLine();
+        }
+        player1.saveHealth();
+        player2.saveHealth();
         pr1.println(str);
         pr1.flush();
         PlayerController pC = new PlayerController();
@@ -217,6 +246,8 @@ public class Server extends Subject  {
         if (player2.status.equals("shoot")) {
             String strLetter = CheckHit(str, fleet1, player1, player2);
             System.out.println(strLetter);
+            lastStr = str;
+            lastLetter = strLetter;
             if (strLetter.contains("sink")) {
                 pr1.println(strLetter);
                 pr1.flush();
@@ -226,15 +257,6 @@ public class Server extends Subject  {
                 pr2.println(strLetter);
                 pr2.flush();
             }
-            /*if (player1.GetHealth() <= 0) {
-                pr2.println("win");
-                pr2.flush();
-                pr1.println("lose");
-                pr1.flush();
-                server.notifyAll("Game over");
-                server.detach(player1);
-                server.detach(player2);
-            }*/
             if (player1.GetHealth() <= 0) {
                 pr1.println("lose");
                 pr1.flush();
@@ -285,6 +307,7 @@ public class Server extends Subject  {
                 result = String.valueOf('I');
             }
         }
+        
         return result;
     }
     
