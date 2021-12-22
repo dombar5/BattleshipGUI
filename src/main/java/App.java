@@ -1,6 +1,7 @@
 import FlyWeight.Texture;
 import FlyWeight.TextureFactory;
 import Interpreter.*;
+import Visitor.*;
 import javafx.scene.layout.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -53,8 +54,13 @@ public class App extends Application {
         public static Button undo;
         public static int undoCount = 0;
         
+        public static Button cannon;
+        public static Button rifle;
+        public static Button rocket;
+        public static Label weaponSelect;
 
         public static Label accuracy;
+        public static String weapon = "Rifle";
 
         //Graphics
         public static Image[] water = new Image[3];
@@ -141,7 +147,27 @@ public class App extends Application {
 	}
 	
 	public static void playerMove(char[][] refBoard, Label text, char[][] cpuTxt, int x, int y) throws IOException {
-            connection.SendData(x + " " + y ); 
+            VisitorDamage damage;
+            int dmg = 1;
+            if(Integer.parseInt(lifeCount.getText().split(" ")[1])<=7){
+                damage = new LifesLow();
+                System.out.println("this " +  Integer.parseInt(lifeCount.getText().split(" ")[1]));
+            }
+            else{
+                damage = new LifesOk();
+                System.out.println("this "  + Integer.parseInt(lifeCount.getText().split(" ")[1]));
+            }
+            if(weapon.equals("Rifle")){
+                dmg = damage.calculateDamage(new Rifle());
+            }
+            if(weapon.equals("Cannon")){
+                dmg = damage.calculateDamage(new Cannon());
+            }
+            if(weapon.equals("Rocket")){
+                dmg = damage.calculateDamage(new Rocket());
+            }
+            
+            connection.SendData(x + " " + y + " " + dmg); 
             coordX = x;
             coordY = y;
             DisableButtons(true);
@@ -284,7 +310,7 @@ public class App extends Application {
         cpu = new Label("Oponent's message:");
         cpu.setStyle("-fx-font: 32 arial; -fx-font-weight: bold; -fx-text-fill: #ff5050");
         cpu.setPadding(new Insets(0, 0, 6, 0));
-        accuracy = new Label("Acc: 1");
+        accuracy = new Label("Accuracy: 1");
 	playerText.setStyle("-fx-font: 16.5 arial; -fx-text-fill: #7070db");
 	
 	cpuText.setStyle("-fx-font: 16.5 arial; -fx-text-fill: #ff5050");
@@ -299,6 +325,29 @@ public class App extends Application {
 	GridPane buttonsGrid_cpu = new GridPane();
 	makeButton(buttonsGrid_cpu, boardPlayer, playerBord, cpuText, boardCPU,  cpuBord, playerText, 1); //Player board
 	makeButton(buttonsGrid_player, boardCPU,  cpuBord, playerText, boardPlayer, playerBord, cpuText, 0); //CPU board
+        
+        rifle = new Button();
+        cannon = new Button();      
+        rocket = new Button();
+        weaponSelect = new Label("Rifle selected");
+        
+        rocket.setText("RO");
+        rifle.setText("RI");
+        cannon.setText("CA");
+        rifle.setMinHeight(43);
+        rifle.setMaxHeight(43);
+        rifle.setMinWidth(43);
+	rifle.setMaxWidth(43);
+        
+        cannon.setMinHeight(43);
+        cannon.setMaxHeight(43);
+        cannon.setMinWidth(43);
+	cannon.setMaxWidth(43);
+        
+        rocket.setMinHeight(43);
+        rocket.setMaxHeight(43);
+        rocket.setMinWidth(43);
+	rocket.setMaxWidth(43);
         
         skip = new Button("Skip");
         surrender = new Button("Surrender");
@@ -339,11 +388,33 @@ public class App extends Application {
                     //undo.setDisable(true);
                 }
             };
+            
+            EventHandler<ActionEvent> Rifle = new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent e) {
+                    SetText(weaponSelect, "Rifle selected!");
+                    weapon = "Rifle";
+                }
+            };
+            EventHandler<ActionEvent> Cannon = new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent e) {
+                    SetText(weaponSelect, "Cannon selected!");
+                    weapon = "Cannon";
+                }
+            };
+            EventHandler<ActionEvent> Rocket = new EventHandler<ActionEvent>() {
+                public void handle(ActionEvent e) {
+                   SetText(weaponSelect, "Rocket selected!");
+                    weapon = "Rocket";
+                }
+            };
         skip.setOnAction(skipEvent);
         surrender.setOnAction(surrenderEvent);
         SendMsg.setOnAction(messageEvent);
         undo.setOnAction(undoEvent);
-        
+        rifle.setOnAction(Rifle);
+        cannon.setOnAction(Cannon);
+        rocket.setOnAction(Rocket);
+        accuracy.setStyle("-fx-font: 20 arial; -fx-text-fill: #000000");
         loadFile(playerBord);
         connection.SendData("loaded");
         int times = 0;
@@ -409,11 +480,15 @@ public class App extends Application {
         mainPane.add(SendMsg, 2, 4);
         mainPane.add(undo, 2, 3);
         mainPane.add(lifeCount, 1,0);
+        mainPane.add(cannon, 2, 8);
+        mainPane.add(rifle, 3, 8);
+        mainPane.add(rocket, 2, 9);
+        mainPane.add(weaponSelect, 3, 9);
 
         mainPane.add(playerMsg, 1, 4);
         mainPane.add(MsgText, 1, 5);
 
-        mainPane.add(accuracy, 2,0);
+        mainPane.add(accuracy, 1,6);
 
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -545,7 +620,8 @@ public class App extends Application {
                         Expression e2 = new Numberr(2);
                         Expression div = new Divide(e1, e2);
                         acc = div.execute();
-                        SetText(accuracy, "Acc: " + acc );
+                        accuracy.setStyle("-fx-font: 20 arial; -fx-text-fill: #ff0000");
+                        SetText(accuracy, "Accuracy: " + acc );
 		}
                 else if (letter.charAt(0)=='I') {
                         cpuBord[coordX][coordY] = 'H';
@@ -554,8 +630,9 @@ public class App extends Application {
                         Expression e1 = new Numberr(acc);
                         Expression e2 = new Numberr(2);
                         Expression div = new Multiply(e1, e2);
+                        accuracy.setStyle("-fx-font: 20 arial; -fx-text-fill: #22ff00");
                         acc = div.execute();
-                        SetText(accuracy, "Acc: " + acc);
+                        SetText(accuracy, "Accuracy: " + acc);
 		}
                 else if (letter.charAt(0)=='E') {
                         cpuBord[coordX][coordY] = 'H';
@@ -564,8 +641,9 @@ public class App extends Application {
                         Expression e1 = new Numberr(acc);
                         Expression e2 = new Numberr(2);
                         Expression div = new Divide(e1, e2);
+                        accuracy.setStyle("-fx-font: 20 arial; -fx-text-fill: #ff0000");
                         acc = div.execute();
-                        SetText(accuracy, "Acc: " + acc);
+                        SetText(accuracy, "Accuracy: " + acc);
 		}
                 else if (!letter.equals('*') && !letter.equals('M') && !letter.equals('I') && !letter.equals('E')) {
                         cpuBord[coordX][coordY] = letter.charAt(0);
@@ -575,8 +653,9 @@ public class App extends Application {
                         Expression e1 = new Numberr(acc);
                         Expression e2 = new Numberr(2);
                         Expression div = new Multiply(e1, e2);
+                        accuracy.setStyle("-fx-font: 20 arial; -fx-text-fill: #22ff00");
                         acc = div.execute();
-                        SetText(accuracy, "Acc: " + acc);
+                        SetText(accuracy, "Accuracy: " + acc);
 		}
                 
     }

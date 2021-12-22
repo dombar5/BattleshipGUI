@@ -24,6 +24,7 @@ public abstract class Player implements IObserver  {
     public int misses;
     public String status;
     public int mineDamage;
+    public int weaponDamage;
     private ArrayList<Integer> healthList;
     private ArrayList<Integer> mineHealthList;
     public Originator org = new Originator(healthList, mineDamage, "111");
@@ -48,12 +49,23 @@ public abstract class Player implements IObserver  {
           health += map.CheckShip(i);
         }
         health -= getMineDamage();
+        health-= getWeaponDamage();
         return health;
     }
     
     public void setMineDamage(int dmg){
         this.mineDamage = dmg;
     }
+    
+    public void addWeaponDamage(int damage){
+        this.weaponDamage += damage;
+    }
+    
+        
+    public int getWeaponDamage(){
+        return this.weaponDamage;
+    }
+    
     
     public int getMineDamage(){
         return this.mineDamage;

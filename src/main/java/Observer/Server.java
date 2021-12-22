@@ -159,7 +159,8 @@ public class Server extends Subject  {
         }
         player1.saveHealth();
         player2.saveHealth();
-        pr2.println(str);
+        String fixedString = str.split(" ")[0] + " " + str.split(" ")[1];
+        pr2.println(fixedString);
         pr2.flush();
         PlayerController pC = new PlayerController();
         if(str.equals("skip")){
@@ -228,9 +229,11 @@ public class Server extends Subject  {
             pr2.flush();
             str = bf2.readLine();
         }
+        
         player1.saveHealth();
         player2.saveHealth();
-        pr1.println(str);
+        String fixedString = str.split(" ")[0] + " " + str.split(" ")[1];
+        pr1.println(fixedString);
         pr1.flush();
         PlayerController pC = new PlayerController();
         if(str.equals("skip")){
@@ -284,6 +287,7 @@ public class Server extends Subject  {
         public static String CheckHit(String data, char[][] refBoard, Player enemy, Player player){
         int letter = Integer.parseInt(data.split(" ")[0]);
         int x = Integer.parseInt(data.split(" ")[1]);
+        int damage = Integer.parseInt(data.split(" ")[2]);
         String result = "";
 
         if (refBoard[letter][x] != 'M' || refBoard[letter][x] != 'H') {
@@ -293,10 +297,14 @@ public class Server extends Subject  {
             } 
             else if (refBoard[letter][x] != '*' && refBoard[letter][x] != 'H' && refBoard[letter][x] != 'M' && refBoard[letter][x] != 'E' && refBoard[letter][x] != 'I') {
               char ship = checkBoat(refBoard[letter][x], enemy);
-              if(ship!='n')
+              if(ship!='n'){
                 result = "sink " + ship;
-              else
+                enemy.addWeaponDamage(damage-1);
+              }
+              else {
                 result = String.valueOf(refBoard[letter][x]);
+                enemy.addWeaponDamage(damage-1);
+              }
                 
             } else if (refBoard[letter][x] == 'E') {   
                 player.setMineDamage(enemy.map.MineHitEnemy(letter, x));
